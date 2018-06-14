@@ -10,7 +10,8 @@ import java.util.ArrayList;
 public class MyApplet extends Applet implements ActionListener{
    TextArea inputArea;
    TextArea outputArea;
-   ArrayList<String> csItems;
+   TextArea sortedArea;
+   InputStorage is;
    
    @Override
    public void init() {
@@ -24,22 +25,46 @@ public class MyApplet extends Applet implements ActionListener{
       add(b);
       
       outputArea = new TextArea(20,50);
-      outputArea.setEditable(true);
+      outputArea.setEditable(false);
       add(outputArea,"left");
+      
+      sortedArea = new TextArea(20,50);
+      sortedArea.setEditable(false);
+      add(sortedArea,"left");
+      
+      is = new InputStorage();
    }
    @Override
    public void actionPerformed(ActionEvent e) {
       String input = inputArea.getText();
+      String[] lines = input.split("\n");
       outputArea.setText("");
-      csItems = CircularShift.execute(input.toLowerCase());
-      outputArea.setText(listToString(csItems));
+      //add lines to InputStorage
+      for(String line: lines){
+          is.addLine(line);
+      }
+      //add Circular Shifted lines to input storage
+      ArrayList<String> unShiftedLines = is.getLines();
+      for(String line: unShiftedLines){
+          is.addCSLine(CircularShift.execute(line));
+      }
+      //set output to unsorted lines
+      outputArea.setText(listofListsToString(is.getCSLines()));
+      //sort ilnes and set sortedArea to them
+      ArrayList<ArrayList> sortedList = Alphabetizer.alphabetize(is.getCSLines());
+      sortedArea.setText(listofListsToString(sortedList));
    }
-   // Converts an List of Strings to a single string with each element
-   // of the list seperated by a newline
    private String listToString(ArrayList<String> input){
        String result = "";
        for(String s: input){
            result += s + "\n";
+       }
+       return result;
+   }
+   private String listofListsToString(ArrayList<ArrayList> input){
+       String result = "";
+       for(ArrayList s: input){
+           result += listToString(s) + "\n\n";
        }
        return result;
    }

@@ -3,8 +3,6 @@ package KWIC;
 //Class used from twinklesharma1311/KWIC-Index
 
 import java.util.ArrayList;
-import java.util.Collections;
-
 
 public class CircularShift {
 
@@ -26,7 +24,6 @@ public class CircularShift {
  
             list.add(temp);
         }
-        Collections.sort(list);
         return list;
     }
 }
